@@ -1,17 +1,17 @@
 {
-  "name": "4.0-ejs",
+  "name": "4.1-ejs-tags",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
   "dependencies": {
-    "ejs": "^5.0.2",
-    "express": "^5.2.1"
+    "ejs": "^3.1.9",
+    "express": "^4.18.2"
   }
 }
