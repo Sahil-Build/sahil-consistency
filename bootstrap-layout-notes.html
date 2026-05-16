@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Bootstrap Layout Notes</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --card: #1e1e1e;
+    --border: #2a2a2a;
+    --accent: #f0c040;
+    --accent2: #5be0a0;
+    --accent3: #f06090;
+    --text: #e8e8e8;
+    --muted: #888;
+    --code-bg: #111;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Syne', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    padding: 2rem 1rem 4rem;
+    min-height: 100vh;
+  }
+
+  header {
+    max-width: 860px;
+    margin: 0 auto 3rem;
+    border-left: 4px solid var(--accent);
+    padding-left: 1.2rem;
+  }
+
+  header .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  header h1 {
+    font-size: 2.4rem;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  header p {
+    margin-top: 0.5rem;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+
+  .container { max-width: 860px; margin: 0 auto; }
+
+  .section {
+    margin-bottom: 2.5rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.4rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--card);
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    background: rgba(240,192,64,0.08);
+    border: 1px solid var(--accent);
+    border-radius: 4px;
+    padding: 2px 7px;
+    letter-spacing: 0.08em;
+  }
+
+  .section-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--text);
+  }
+
+  .section-body { padding: 1.4rem; }
+
+  p.note {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+
+  code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    background: var(--code-bg);
+    border: 1px solid #2f2f2f;
+    border-radius: 4px;
+    padding: 2px 6px;
+    color: var(--accent2);
+  }
+
+  pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    background: var(--code-bg);
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    overflow-x: auto;
+    line-height: 1.7;
+    color: #c8c8c8;
+    margin: 0.75rem 0;
+  }
+
+  pre .kw { color: var(--accent3); }
+  pre .str { color: var(--accent2); }
+  pre .cm { color: #555; font-style: italic; }
+  pre .cls { color: var(--accent); }
+
+  .grid-demo {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 4px;
+    margin: 1rem 0;
+  }
+
+  .col-box {
+    height: 28px;
+    background: rgba(240,192,64,0.15);
+    border: 1px solid var(--accent);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--accent);
+  }
+
+  .col-box.span4 { grid-column: span 4; background: rgba(91,224,160,0.12); border-color: var(--accent2); color: var(--accent2); }
+  .col-box.span6 { grid-column: span 6; background: rgba(240,96,144,0.12); border-color: var(--accent3); color: var(--accent3); }
+  .col-box.span12 { grid-column: span 12; }
+  .col-box.span3 { grid-column: span 3; background: rgba(91,224,160,0.12); border-color: var(--accent2); color: var(--accent2); }
+  .col-box.span8 { grid-column: span 8; }
+  .col-box.span2 { grid-column: span 2; background: rgba(240,96,144,0.12); border-color: var(--accent3); color: var(--accent3); }
+
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.75rem 0;
+  }
+
+  .pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid;
+  }
+
+  .pill.yellow { color: var(--accent); border-color: var(--accent); background: rgba(240,192,64,0.07); }
+  .pill.green { color: var(--accent2); border-color: var(--accent2); background: rgba(91,224,160,0.07); }
+  .pill.pink { color: var(--accent3); border-color: var(--accent3); background: rgba(240,96,144,0.07); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.82rem;
+    margin: 0.75rem 0;
+  }
+
+  thead th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--accent);
+    text-align: left;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--border);
+    letter-spacing: 0.05em;
+  }
+
+  tbody td {
+    padding: 0.55rem 0.75rem;
+    border-bottom: 1px solid #1f1f1f;
+    color: var(--text);
+    vertical-align: top;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  tbody td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent2);
+    font-size: 0.75rem;
+  }
+
+  .tip-box {
+    background: rgba(240,192,64,0.06);
+    border-left: 3px solid var(--accent);
+    padding: 0.75rem 1rem;
+    border-radius: 0 6px 6px 0;
+    font-size: 0.85rem;
+    color: #bbb;
+    margin-top: 0.75rem;
+    line-height: 1.6;
+  }
+
+  .tip-box strong { color: var(--accent); }
+
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 1rem 0;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="tag">Angela Yu Bootcamp · Bootstrap Module</div>
+  <h1>Bootstrap Layout Notes</h1>
+  <p>Grid system, containers, breakpoints, and utilities — all in one place.</p>
+</header>
+
+<div class="container">
+
+  <!-- 1. The Big Idea -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <span class="section-title">The Big Idea — What Bootstrap Actually Does</span>
+    </div>
+    <div class="section-body">
+      <p class="note">Bootstrap gives you a pre-built CSS system so you stop writing layout CSS from scratch. It handles responsiveness automatically using a <strong>12-column grid</strong>. Every layout you build will be based on dividing those 12 columns.</p>
+      <p class="note">You add classes to your HTML — Bootstrap's CSS file does the rest. No custom CSS needed for basic layouts.</p>
+      <pre><span class="cm">&lt;!-- Link Bootstrap in &lt;head&gt; --&gt;</span>
+<span class="kw">&lt;link</span> rel=<span class="str">"stylesheet"</span> href=<span class="str">"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"</span><span class="kw">&gt;</span></pre>
+    </div>
+  </div>
+
+  <!-- 2. Containers -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <span class="section-title">Containers — The Wrapper Everything Lives In</span>
+    </div>
+    <div class="section-body">
+      <p class="note">Every Bootstrap layout starts with a container. It centers your content and adds padding on the sides.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Class</th>
+            <th>Behavior</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>.container</td>
+            <td>Fixed width — snaps to breakpoint widths. Most common.</td>
+          </tr>
+          <tr>
+            <td>.container-fluid</td>
+            <td>Always 100% width. Edge-to-edge layout.</td>
+          </tr>
+          <tr>
+            <td>.container-md</td>
+            <td>Fluid below md, fixed from md and up. (Works for any breakpoint.)</td>
+          </tr>
+        </tbody>
+      </table>
+      <pre><span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"container"</span><span class="kw">&gt;</span>
+  <span class="cm">&lt;!-- your rows and columns go here --&gt;</span>
+<span class="kw">&lt;/div&gt;</span></pre>
+    </div>
+  </div>
+
+  <!-- 3. The Grid -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <span class="section-title">The 12-Column Grid — Row → Col Pattern</span>
+    </div>
+    <div class="section-body">
+      <p class="note">Always: <code>.container</code> → <code>.row</code> → <code>.col-*</code>. Columns go inside rows, rows go inside containers. Break this order = broken layout.</p>
+      <pre><span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"container"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"row"</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"col-4"</span><span class="kw">&gt;</span>Left<span class="kw">&lt;/div&gt;</span>
+    <span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"col-4"</span><span class="kw">&gt;</span>Middle<span class="kw">&lt;/div&gt;</span>
+    <span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"col-4"</span><span class="kw">&gt;</span>Right<span class="kw">&lt;/div&gt;</span>
+  <span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;/div&gt;</span></pre>
+
+      <p class="note" style="margin-top:1rem;">Visual — 12 columns, 3×col-4:</p>
+      <div class="grid-demo">
+        <div class="col-box span4">col-4</div>
+        <div class="col-box span4">col-4</div>
+        <div class="col-box span4">col-4</div>
+      </div>
+      <div class="grid-demo">
+        <div class="col-box span6">col-6</div>
+        <div class="col-box span6">col-6</div>
+      </div>
+      <div class="grid-demo">
+        <div class="col-box span3">col-3</div>
+        <div class="col-box span3">col-3</div>
+        <div class="col-box span3">col-3</div>
+        <div class="col-box span3">col-3</div>
+      </div>
+      <div class="grid-demo">
+        <div class="col-box span8">col-8</div>
+        <div class="col-box span4">col-4</div>
+      </div>
+
+      <div class="tip-box">
+        <strong>Rule:</strong> Column numbers in a row must add up to 12 (or wrap to next line if they exceed 12).
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Breakpoints -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">04</span>
+      <span class="section-title">Breakpoints — Making It Responsive</span>
+    </div>
+    <div class="section-body">
+      <p class="note">Bootstrap is <strong>mobile-first</strong>. Breakpoints activate at the given size and <em>up</em>. Stack multiple breakpoint classes on one element.</p>
+      <table>
+        <thead>
+          <tr><th>Prefix</th><th>Screen Size</th><th>Use Case</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>col-</td><td>All sizes (< 576px)</td><td>Mobile default</td></tr>
+          <tr><td>col-sm-</td><td>≥ 576px</td><td>Large phones</td></tr>
+          <tr><td>col-md-</td><td>≥ 768px</td><td>Tablets</td></tr>
+          <tr><td>col-lg-</td><td>≥ 992px</td><td>Laptops</td></tr>
+          <tr><td>col-xl-</td><td>≥ 1200px</td><td>Desktops</td></tr>
+          <tr><td>col-xxl-</td><td>≥ 1400px</td><td>Wide screens</td></tr>
+        </tbody>
+      </table>
+      <pre><span class="cm">&lt;!-- Full width on mobile, half on tablet, 1/3 on desktop --&gt;</span>
+<span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"col-12 col-md-6 col-lg-4"</span><span class="kw">&gt;</span>Card<span class="kw">&lt;/div&gt;</span></pre>
+      <div class="tip-box">
+        <strong>Mental model:</strong> Read right to left. <code>col-lg-4</code> means "4 columns wide on large+ screens." Below large, it falls back to the smaller class or stacks full-width.
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. Auto Columns -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">05</span>
+      <span class="section-title">Auto & Equal Columns</span>
+    </div>
+    <div class="section-body">
+      <p class="note">Don't want to do the math? Use <code>.col</code> (no number) and Bootstrap splits the space equally.</p>
+      <pre><span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"row"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"col"</span><span class="kw">&gt;</span>Auto<span class="kw">&lt;/div&gt;</span>  <span class="cm">&lt;!-- 1/3 each --&gt;</span>
+  <span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"col"</span><span class="kw">&gt;</span>Auto<span class="kw">&lt;/div&gt;</span>
+  <span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"col"</span><span class="kw">&gt;</span>Auto<span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;/div&gt;</span>
+
+<span class="cm">&lt;!-- Mix: fixed + auto fills remaining --&gt;</span>
+<span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"row"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"col-4"</span><span class="kw">&gt;</span>Sidebar<span class="kw">&lt;/div&gt;</span>
+  <span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"col"</span><span class="kw">&gt;</span>Main fills rest<span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;/div&gt;</span></pre>
+    </div>
+  </div>
+
+  <!-- 6. Spacing Utilities -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">06</span>
+      <span class="section-title">Spacing Utilities — Margin & Padding</span>
+    </div>
+    <div class="section-body">
+      <p class="note">Format: <code>{property}{sides}-{size}</code></p>
+      <div class="pills">
+        <span class="pill yellow">m = margin</span>
+        <span class="pill yellow">p = padding</span>
+        <span class="pill green">t=top  b=bottom  s=left  e=right</span>
+        <span class="pill green">x = left+right  y = top+bottom</span>
+        <span class="pill pink">0 to 5 (size) or auto</span>
+      </div>
+      <pre><span class="cls">mt-3</span>    → margin-top: 1rem
+<span class="cls">px-4</span>    → padding left+right: 1.5rem
+<span class="cls">mb-0</span>    → margin-bottom: 0
+<span class="cls">ms-auto</span> → margin-left: auto (pushes element right)
+<span class="cls">p-5</span>     → padding all sides: 3rem</pre>
+      <div class="tip-box">
+        <strong>Trick:</strong> <code>ms-auto</code> on a flex child pushes it to the far right — great for nav buttons.
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. Display & Flex Utilities -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">07</span>
+      <span class="section-title">Display & Flexbox Utilities</span>
+    </div>
+    <div class="section-body">
+      <p class="note">Bootstrap uses flexbox under the hood. You can activate and control it with utility classes.</p>
+      <pre><span class="cls">d-flex</span>              → display: flex
+<span class="cls">justify-content-center</span>  → center items horizontally
+<span class="cls">justify-content-between</span> → space between items
+<span class="cls">align-items-center</span>  → center vertically
+<span class="cls">flex-wrap</span>           → allow wrapping
+<span class="cls">gap-3</span>               → gap between flex children</pre>
+      <pre><span class="cm">&lt;!-- Centered navbar example --&gt;</span>
+<span class="kw">&lt;nav</span> <span class="cls">class</span>=<span class="str">"d-flex justify-content-between align-items-center p-3"</span><span class="kw">&gt;</span>
+  <span class="kw">&lt;div&gt;</span>Logo<span class="kw">&lt;/div&gt;</span>
+  <span class="kw">&lt;div</span> <span class="cls">class</span>=<span class="str">"d-flex gap-3"</span><span class="kw">&gt;</span>
+    <span class="kw">&lt;a&gt;</span>Home<span class="kw">&lt;/a&gt;&lt;a&gt;</span>About<span class="kw">&lt;/a&gt;&lt;a&gt;</span>Contact<span class="kw">&lt;/a&gt;</span>
+  <span class="kw">&lt;/div&gt;</span>
+<span class="kw">&lt;/nav&gt;</span></pre>
+    </div>
+  </div>
+
+  <!-- 8. Common Gotchas -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">08</span>
+      <span class="section-title">Common Gotchas</span>
+    </div>
+    <div class="section-body">
+      <table>
+        <thead><tr><th>Problem</th><th>Fix</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Columns aren't side by side</td>
+            <td>Make sure they're inside a <code>.row</code> inside a <code>.container</code></td>
+          </tr>
+          <tr>
+            <td>Columns exceed 12 and look broken</td>
+            <td>They'll wrap — this is intentional, but check your math</td>
+          </tr>
+          <tr>
+            <td>Layout looks fine on desktop, broken on mobile</td>
+            <td>Add <code>col-12</code> as the mobile default alongside your <code>col-md-*</code></td>
+          </tr>
+          <tr>
+            <td>Horizontal scroll appearing</td>
+            <td>A <code>.row</code> is missing its parent <code>.container</code></td>
+          </tr>
+          <tr>
+            <td>Custom CSS fighting Bootstrap</td>
+            <td>Link your CSS <em>after</em> Bootstrap's CDN link</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 9. Quick Reference -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-num">09</span>
+      <span class="section-title">Quick Reference Cheatsheet</span>
+    </div>
+    <div class="section-body">
+      <pre><span class="cm">/* Layout skeleton */</span>
+container → row → col-*
+
+<span class="cm">/* Equal 3-column */</span>
+<span class="cls">col-12 col-md-4</span>
+
+<span class="cm">/* Sidebar + main */</span>
+<span class="cls">col-12 col-md-3</span>  +  <span class="cls">col-12 col-md-9</span>
+
+<span class="cm">/* Full row */</span>
+<span class="cls">col-12</span>
+
+<span class="cm">/* Centering a card */</span>
+<span class="cls">row justify-content-center</span>  +  <span class="cls">col-md-6</span>
+
+<span class="cm">/* Stack spacing */</span>
+<span class="cls">mb-3  mt-4  py-5  px-3</span>
+
+<span class="cm">/* Flex nav */</span>
+<span class="cls">d-flex justify-content-between align-items-center</span></pre>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
