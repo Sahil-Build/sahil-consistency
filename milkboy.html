@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no"/>
+<meta name="theme-color" content="#1c0f00"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Milk Boy"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<title>Milk Boy</title>
+
+<!-- Inline manifest as data URI for PWA -->
+<link rel="manifest" href="data:application/json,{
+  %22name%22:%22Milk Boy%22,
+  %22short_name%22:%22Milk Boy%22,
+  %22start_url%22:%22.%22,
+  %22display%22:%22standalone%22,
+  %22background_color%22:%22%23f0ebe0%22,
+  %22theme_color%22:%22%231c0f00%22,
+  %22orientation%22:%22portrait%22
+}"/>
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet"/>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --brown-dark: #1c0f00;
+    --brown-mid: #3b1f00;
+    --brown-light: #6b3a10;
+    --gold: #d49030;
+    --gold-light: #e8a040;
+    --cream: #f0ebe0;
+    --cream-light: #faf6ee;
+    --cream-mid: #e4d9c6;
+    --text: #2a1400;
+    --text-mid: #9a7040;
+    --text-light: #fef6e4;
+    --green: #2ea040;
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bot: env(safe-area-inset-bottom, 0px);
+  }
+  html, body {
+    height: 100%; background: var(--cream); overflow: hidden;
+    font-family: 'DM Sans', sans-serif;
+  }
+  #app {
+    height: 100%; display: flex; flex-direction: column;
+    max-width: 430px; margin: 0 auto;
+    position: relative; overflow: hidden;
+    background: var(--cream);
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    background: linear-gradient(155deg, #1c0f00 0%, #3b1f00 55%, #5c3010 100%);
+    border-radius: 0 0 32px 32px;
+    padding: calc(var(--safe-top) + 20px) 20px 22px;
+    position: relative; overflow: hidden; flex-shrink: 0;
+    box-shadow: 0 8px 32px rgba(30,10,0,0.30);
+  }
+  .hero-glow1 {
+    position: absolute; width: 220px; height: 220px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,185,60,0.18) 0%, transparent 70%);
+    top: -60px; right: -50px; pointer-events: none;
+  }
+  .hero-glow2 {
+    position: absolute; width: 140px; height: 140px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,230,130,0.09) 0%, transparent 70%);
+    bottom: -20px; left: 10px; pointer-events: none;
+  }
+  .hero-drop {
+    position: absolute; right: 16px; bottom: 8px; opacity: 0.08; pointer-events: none;
+  }
+  .hero-top {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    position: relative; z-index: 2;
+  }
+  .hero-brand { display: flex; align-items: center; gap: 11px; }
+  .hero-icon {
+    width: 46px; height: 46px; border-radius: 15px;
+    background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.14);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; backdrop-filter: blur(6px);
+  }
+  .hero-title { font-family: 'Lora', serif; font-size: 22px; color: var(--text-light); font-weight: 700; }
+  .hero-sub { font-size: 12px; color: #c49050; margin-top: 3px; }
+  .gear-btn {
+    width: 42px; height: 42px; border-radius: 14px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.07); color: #e8c88a;
+    font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background .2s, transform .15s; backdrop-filter: blur(4px);
+  }
+  .gear-btn:active { transform: scale(0.86); background: rgba(255,255,255,0.14); }
+  .hero-stats { display: flex; gap: 8px; margin-top: 18px; position: relative; z-index: 2; }
+  .stat {
+    flex: 1; background: rgba(255,255,255,0.075); border: 1px solid rgba(255,255,255,0.10);
+    border-radius: 15px; padding: 11px 6px; text-align: center; backdrop-filter: blur(8px);
+  }
+  .stat-val { font-family: 'Lora', serif; font-size: 18px; color: var(--text-light); font-weight: 700; }
+  .stat-lbl { font-size: 10px; color: #9a6830; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600; }
+  .stat.paid-ok { background: rgba(40,180,70,0.16); }
+
+  /* ─── TABS ─── */
+  .tabbar {
+    display: flex; gap: 0; background: #e6dfd0;
+    border-radius: 18px; padding: 4px; margin: 14px 14px 0; flex-shrink: 0;
+  }
+  .tab-btn {
+    flex: 1; padding: 9px 4px; border: none; background: transparent;
+    border-radius: 14px; cursor: pointer; font-family: 'DM Sans', sans-serif;
+    font-size: 13px; font-weight: 500; color: #9a7040;
+    transition: all .22s ease;
+  }
+  .tab-btn.active { background: #fff; color: var(--text); font-weight: 600; box-shadow: 0 2px 10px rgba(30,10,0,0.12); }
+  .tab-btn:active { transform: scale(0.94); }
+
+  /* ─── SCROLL AREA ─── */
+  .scroll-area {
+    flex: 1; overflow-y: auto; overflow-x: hidden;
+    padding: 14px 14px calc(var(--safe-bot) + 80px);
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .scroll-area::-webkit-scrollbar { display: none; }
+
+  /* ─── MONTH NAV ─── */
+  .month-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .nav-btn {
+    width: 38px; height: 38px; border-radius: 13px; border: 1.5px solid var(--cream-mid);
+    background: #fff; font-size: 20px; color: #5c3010; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .18s; box-shadow: 0 2px 8px rgba(30,10,0,0.07);
+  }
+  .nav-btn:active { transform: scale(0.88); background: #fef6e4; }
+  .month-name { font-family: 'Lora', serif; font-size: 20px; color: var(--text); font-weight: 700; text-align: center; }
+  .year-lbl { font-size: 12px; color: var(--text-mid); text-align: center; margin-top: 1px; }
+
+  /* ─── CALENDAR ─── */
+  .wd-row { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; margin-bottom: 6px; }
+  .wd { text-align: center; font-size: 11px; font-weight: 700; color: #b89060; letter-spacing: .4px; padding: 3px 0; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 5px; }
+  .cal-cell {
+    border-radius: 12px; padding: 8px 2px 6px; text-align: center;
+    cursor: pointer; position: relative; user-select: none;
+    transition: transform .14s cubic-bezier(.34,1.56,.64,1), box-shadow .14s;
+  }
+  .cal-cell:active { transform: scale(0.82) !important; }
+  .cal-cell.empty { pointer-events: none; }
+  .cal-cell.future { opacity: .28; pointer-events: none; }
+  .cal-cell.got { background: linear-gradient(135deg,#3b1f00,#6b3a10); box-shadow: 0 4px 12px rgba(30,10,0,0.22); }
+  .cal-cell.plain { background: #fff; border: 1.5px solid var(--cream-mid); }
+  .cal-cell.today { border: 2.5px solid var(--gold) !important; }
+  .cal-cell.selected { box-shadow: 0 0 0 2.5px #c8783a !important; }
+  .cnum { font-size: 12px; font-weight: 600; line-height: 1; }
+  .got .cnum { color: var(--text-light); }
+  .plain .cnum { color: var(--text); }
+  .cdot { font-size: 12px; margin-top: 3px; }
+  .cqty { font-size: 8px; color: #c89060; margin-top: 1px; font-weight: 600; }
+
+  /* ─── PROGRESS ─── */
+  .prog-track { background: #ddd5c2; border-radius: 10px; height: 7px; margin: 14px 0 4px; overflow: hidden; }
+  .prog-fill { height: 100%; border-radius: 10px; background: linear-gradient(90deg,#c8783a,#e8a040); transition: width .7s cubic-bezier(.34,1.56,.64,1); }
+  .prog-lbl { font-size: 11px; color: var(--text-mid); text-align: right; font-weight: 500; }
+
+  /* ─── DAY PANEL ─── */
+  .day-panel {
+    background: #fff; border-radius: 22px; padding: 18px; margin-top: 14px;
+    border: 1px solid var(--cream-mid); box-shadow: 0 6px 28px rgba(30,10,0,0.10);
+    animation: slideUp .28s cubic-bezier(.34,1.56,.64,1);
+  }
+  @keyframes slideUp { from { opacity:0; transform:translateY(14px) scale(0.96); } to { opacity:1; transform:none; } }
+  .panel-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+  .panel-title { font-family: 'Lora', serif; font-size: 16px; color: var(--text); font-weight: 700; }
+  .close-btn {
+    width: 30px; height: 30px; border-radius: 50%; background: #f0e8d8;
+    border: none; cursor: pointer; font-size: 17px; color: var(--text-mid);
+    display: flex; align-items: center; justify-content: center; transition: background .15s;
+  }
+  .close-btn:active { background: #e4d4b8; transform: scale(0.88); }
+
+  /* toggle row */
+  .toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 15px; border-radius: 15px; cursor: pointer;
+    border: 1.5px solid var(--cream-mid); margin-bottom: 12px;
+    transition: background .22s, border-color .22s; background: var(--cream-light);
+  }
+  .toggle-row.on { background: linear-gradient(135deg,#3b1f00,#6b3a10); border-color: transparent; }
+  .toggle-lbl { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 9px; color: var(--text); }
+  .toggle-row.on .toggle-lbl { color: var(--text-light); }
+  .sw { width: 46px; height: 26px; border-radius: 13px; position: relative; transition: background .22s; flex-shrink: 0; }
+  .sw.on { background: rgba(255,255,255,0.28); }
+  .sw.off { background: #d4c4a8; }
+  .knob {
+    position: absolute; top: 4px; width: 18px; height: 18px; border-radius: 50%;
+    background: #fff; box-shadow: 0 1px 5px rgba(0,0,0,0.2);
+    transition: left .24s cubic-bezier(.34,1.56,.64,1);
+  }
+  .knob.on { left: 24px; } .knob.off { left: 4px; }
+
+  /* stepper */
+  .stepper { display: flex; align-items: center; border: 1.5px solid var(--cream-mid); border-radius: 14px; overflow: hidden; background: var(--cream-light); margin-top: 5px; }
+  .step-btn { width: 44px; height: 42px; border: none; background: transparent; cursor: pointer; font-size: 22px; color: #5c3010; font-weight: 700; display: flex; align-items: center; justify-content: center; transition: background .15s; }
+  .step-btn:active { background: #e0d0b0; transform: scale(0.88); }
+  .step-val { flex: 1; text-align: center; font-family: 'Lora', serif; font-size: 16px; font-weight: 700; color: var(--text); }
+
+  /* field */
+  .flbl { font-size: 11px; font-weight: 700; color: var(--text-mid); letter-spacing: .6px; text-transform: uppercase; margin-bottom: 5px; }
+  .finput {
+    width: 100%; padding: 11px 13px; border-radius: 13px;
+    border: 1.5px solid #e0d0b0; background: var(--cream-light);
+    font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text);
+    outline: none; transition: border-color .18s, box-shadow .18s;
+    -webkit-appearance: none;
+  }
+  .finput:focus { border-color: #c8783a; box-shadow: 0 0 0 3px rgba(200,120,58,.13); }
+  .fgroup { margin-bottom: 11px; }
+
+  /* ─── SUMMARY ─── */
+  .sum-card { background: #fff; border-radius: 22px; padding: 20px; border: 1px solid var(--cream-mid); box-shadow: 0 4px 20px rgba(30,10,0,0.07); }
+  .sum-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px dashed #f0e4d0; }
+  .sum-row:last-child { border-bottom: none; }
+  .sum-key { font-size: 14px; color: var(--text-mid); display: flex; align-items: center; gap: 8px; }
+  .sum-val { font-size: 15px; color: var(--text); font-weight: 700; }
+  .sum-val.pending { color: #c8783a; }
+  .sum-val.paid-color { color: var(--green); }
+
+  /* big bill box */
+  .bill-box {
+    background: linear-gradient(135deg,#3b1f00,#5c3010);
+    border-radius: 22px; padding: 22px; margin: 14px 0;
+    text-align: center; position: relative; overflow: hidden;
+    box-shadow: 0 6px 24px rgba(30,10,0,0.28);
+  }
+  .bill-box-glow { position: absolute; width: 160px; height: 160px; border-radius: 50%; background: radial-gradient(circle,rgba(255,185,60,0.14) 0%,transparent 70%); top:-50px; right:-30px; pointer-events:none; }
+  .bill-label { font-size: 12px; color: #c49050; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+  .bill-amount { font-family: 'Lora', serif; font-size: 42px; color: var(--text-light); font-weight: 700; margin: 6px 0 2px; }
+  .bill-sub { font-size: 13px; color: #c49050; }
+
+  /* ─── SETTINGS ─── */
+  .sec-title { font-size: 11px; font-weight: 700; color: #b89060; letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 10px; padding-left: 2px; }
+  .set-card { background: #fff; border-radius: 20px; padding: 18px; border: 1px solid var(--cream-mid); box-shadow: 0 2px 12px rgba(30,10,0,0.06); display: flex; flex-direction: column; gap: 13px; margin-bottom: 20px; }
+  .notif-btn { padding: 12px; border-radius: 14px; border: 1.5px solid #e0d0b0; background: var(--cream-light); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 9px; transition: all .18s; }
+  .notif-btn:active { background: #f0e4cc; border-color: #c8783a; transform: scale(0.96); }
+
+  /* ─── CTA ─── */
+  .cta {
+    width: 100%; padding: 15px; border-radius: 20px; border: none;
+    cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600;
+    display: flex; align-items: center; justify-content: center; gap: 9px;
+    transition: transform .18s, box-shadow .18s;
+  }
+  .cta:active { transform: scale(0.95); }
+  .cta-dark { background: linear-gradient(135deg,#3b1f00,#6b3a10); color: var(--text-light); box-shadow: 0 6px 22px rgba(30,10,0,0.30); }
+  .cta-green { background: linear-gradient(135deg,#1a6b28,#2ea040); color: #fff; box-shadow: 0 6px 20px rgba(30,100,40,0.26); }
+
+  /* ─── FAB ─── */
+  .fab-wrap {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 12px 14px calc(var(--safe-bot) + 14px);
+    background: linear-gradient(to top, #f0ebe0 65%, transparent);
+    z-index: 80; pointer-events: none;
+  }
+  .fab-wrap .cta { pointer-events: all; }
+
+  /* ─── TOAST ─── */
+  .toast {
+    position: absolute; bottom: calc(var(--safe-bot) + 88px); left: 50%;
+    transform: translateX(-50%);
+    padding: 11px 22px; border-radius: 50px; font-size: 13px; font-weight: 600;
+    z-index: 999; white-space: nowrap;
+    animation: toastIn .3s cubic-bezier(.34,1.56,.64,1) forwards;
+    box-shadow: 0 6px 28px rgba(0,0,0,0.22); pointer-events: none;
+  }
+  .toast.ok { background: #2a1400; color: var(--text-light); }
+  .toast.err { background: #8b1a1a; color: #fff; }
+  @keyframes toastIn { from { opacity:0; transform:translateX(-50%) translateY(10px) scale(.90); } to { opacity:1; transform:translateX(-50%) none; } }
+
+  /* ─── PAGE ANIM ─── */
+  .fade-slide { opacity:0; transform:translateY(16px); transition: opacity .4s ease, transform .4s ease; }
+  .fade-slide.in { opacity:1; transform:none; }
+
+  /* install banner */
+  .install-banner {
+    display: none; position: absolute; top: 0; left: 0; right: 0;
+    background: linear-gradient(90deg,#3b1f00,#5c3010);
+    padding: calc(var(--safe-top) + 6px) 14px 10px;
+    z-index: 200; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .install-banner.show { display: flex; }
+  .install-text { color: #fef6e4; font-size: 13px; font-weight: 500; }
+  .install-btn { background: #e8a040; color: #1c0f00; border: none; border-radius: 10px; padding: 7px 14px; font-size: 13px; font-weight: 700; cursor: pointer; font-family: 'DM Sans',sans-serif; white-space: nowrap; }
+  .install-dismiss { background: none; border: none; color: rgba(255,255,255,0.5); font-size: 20px; cursor: pointer; padding: 0 4px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- Install banner -->
+  <div class="install-banner" id="installBanner">
+    <span class="install-text">📲 Add Milk Boy to Home Screen</span>
+    <button class="install-btn" id="installBtn">Install</button>
+    <button class="install-dismiss" id="installDismiss">×</button>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero fade-slide" id="hero">
+    <div class="hero-glow1"></div>
+    <div class="hero-glow2"></div>
+    <svg class="hero-drop" width="72" height="100" viewBox="0 0 72 100" fill="none">
+      <path d="M36 3C36 3 5 47 5 69C5 89 19 97 36 97C53 97 67 89 67 69C67 47 36 3 36 3Z" fill="white"/>
+      <ellipse cx="27" cy="62" rx="6" ry="9" fill="white" opacity="0.4" transform="rotate(-18 27 62)"/>
+    </svg>
+    <div class="hero-top">
+      <div class="hero-brand">
+        <div class="hero-icon">🥛</div>
+        <div>
+          <div class="hero-title">Milk Boy</div>
+          <div class="hero-sub" id="vendorSubtitle">Your Milk Vendor</div>
+        </div>
+      </div>
+      <button class="gear-btn" id="gearBtn">⚙️</button>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-val" id="statDays">0</div><div class="stat-lbl">Days</div></div>
+      <div class="stat"><div class="stat-val" id="statLiters">0.0L</div><div class="stat-lbl">Milk</div></div>
+      <div class="stat"><div class="stat-val" id="statAmt">₹0</div><div class="stat-lbl">Due</div></div>
+      <div class="stat" id="statPaidBox"><div class="stat-val" id="statPaid">⏳</div><div class="stat-lbl" id="statPaidLbl">Unpaid</div></div>
+    </div>
+  </div>
+
+  <!-- TABS (hidden in settings) -->
+  <div class="tabbar fade-slide" id="tabbar">
+    <button class="tab-btn active" data-tab="calendar">📅 Calendar</button>
+    <button class="tab-btn" data-tab="summary">📊 Summary</button>
+  </div>
+
+  <!-- SCROLL AREA -->
+  <div class="scroll-area" id="scrollArea">
+
+    <!-- CALENDAR PAGE -->
+    <div id="page-calendar">
+      <div class="month-nav">
+        <button class="nav-btn" id="prevBtn">‹</button>
+        <div>
+          <div class="month-name" id="monthName">—</div>
+          <div class="year-lbl" id="yearLbl">—</div>
+        </div>
+        <button class="nav-btn" id="nextBtn">›</button>
+      </div>
+      <div class="wd-row">
+        <div class="wd">Su</div><div class="wd">Mo</div><div class="wd">Tu</div>
+        <div class="wd">We</div><div class="wd">Th</div><div class="wd">Fr</div><div class="wd">Sa</div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+      <div class="prog-lbl" id="progLbl">0 of 0 days tracked</div>
+      <div id="dayPanel"></div>
+      <div style="height:72px"></div>
+    </div>
+
+    <!-- SUMMARY PAGE -->
+    <div id="page-summary" style="display:none">
+      <div class="month-nav">
+        <button class="nav-btn" id="prevBtn2">‹</button>
+        <div>
+          <div class="month-name" id="monthName2">—</div>
+          <div class="year-lbl" id="yearLbl2">—</div>
+        </div>
+        <button class="nav-btn" id="nextBtn2">›</button>
+      </div>
+
+      <!-- Big bill box -->
+      <div class="bill-box">
+        <div class="bill-box-glow"></div>
+        <div class="bill-label">Total Amount Due</div>
+        <div class="bill-amount" id="billAmount">₹0</div>
+        <div class="bill-sub" id="billSub">0 days · 0.0 liters</div>
+      </div>
+
+      <div class="sum-card">
+        <div class="sum-row"><div class="sum-key">📅 Days received</div><div class="sum-val" id="sumDays">—</div></div>
+        <div class="sum-row"><div class="sum-key">🥛 Total milk</div><div class="sum-val" id="sumLiters">—</div></div>
+        <div class="sum-row"><div class="sum-key">💰 Rate</div><div class="sum-val" id="sumRate">—</div></div>
+        <div class="sum-row"><div class="sum-key">🧾 Amount due</div><div class="sum-val" id="sumAmt">—</div></div>
+        <div class="sum-row"><div class="sum-key">✅ Status</div><div class="sum-val" id="sumStatus">—</div></div>
+      </div>
+
+      <div class="prog-track" style="margin-top:16px"><div class="prog-fill" id="progFill2" style="width:0%"></div></div>
+      <div class="prog-lbl" id="progLbl2">0% tracked</div>
+
+      <div style="height:12px"></div>
+      <button class="cta" id="markPaidBtn">💰 Mark Month as Paid</button>
+      <div style="height:72px"></div>
+    </div>
+
+    <!-- SETTINGS PAGE -->
+    <div id="page-settings" style="display:none">
+      <div class="sec-title">Vendor Info</div>
+      <div class="set-card">
+        <div class="fgroup">
+          <div class="flbl">Vendor Name</div>
+          <input class="finput" id="vendorInput" placeholder="e.g. Ramu Bhai" value="Your Milk Vendor"/>
+        </div>
+        <div class="fgroup" style="margin-bottom:0">
+          <div class="flbl">Price per Liter (₹)</div>
+          <input class="finput" id="priceInput" type="number" value="60" inputmode="numeric"/>
+        </div>
+      </div>
+      <div class="sec-title">Notifications</div>
+      <div class="set-card">
+        <div class="fgroup">
+          <div class="flbl">Daily Reminder Time</div>
+          <input class="finput" id="notifTimeInput" type="time" value="07:00"/>
+        </div>
+        <button class="notif-btn" id="notifBtn">🔔 Enable Daily Reminder</button>
+      </div>
+      <div class="sec-title">About</div>
+      <div class="set-card" style="flex-direction:row;align-items:center;gap:14px">
+        <div style="font-size:36px">🥛</div>
+        <div>
+          <div style="font-family:'Lora',serif;font-weight:700;color:#2a1400;font-size:16px">Milk Boy</div>
+          <div style="font-size:12px;color:#9a7040;margin-top:3px">Track daily milk delivery &amp; auto-calculate what you owe your vendor.</div>
+        </div>
+      </div>
+      <div style="height:30px"></div>
+    </div>
+
+  </div><!-- /scroll-area -->
+
+  <!-- FAB -->
+  <div class="fab-wrap" id="fabWrap">
+    <button class="cta cta-dark" id="fabBtn">🥛 Mark Today's Milk</button>
+  </div>
+
+  <!-- TOAST -->
+  <div class="toast ok" id="toast" style="display:none"></div>
+
+</div><!-- /app -->
+
+<script>
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+
+// ── STATE ──
+let state = {
+  year: new Date().getFullYear(),
+  month: new Date().getMonth(),
+  records: {}, // "Y-M": { day: { received, qty, note } }
+  paid: {},    // "Y-M": bool
+  price: 60,
+  vendor: "Your Milk Vendor",
+  notifTime: "07:00",
+  tab: "calendar",
+  activeDay: null,
+};
+
+const now = new Date();
+const TODAY = now.getDate();
+const THIS_MONTH = now.getMonth();
+const THIS_YEAR = now.getFullYear();
+
+function mk(y, m) { return `${y}-${m}`; }
+function daysIn(y, m) { return new Date(y, m+1, 0).getDate(); }
+function firstDay(y, m) { return new Date(y, m, 1).getDay(); }
+function isThisMonth() { return state.month === THIS_MONTH && state.year === THIS_YEAR; }
+function getKey() { return mk(state.year, state.month); }
+function getMonthRec() { return state.records[getKey()] || {}; }
+
+function getTotals() {
+  const recs = Object.values(getMonthRec()).filter(r => r?.received);
+  const liters = recs.reduce((s,r) => s + (r.qty||0.5), 0);
+  return { liters, amt: liters * state.price, count: recs.length };
+}
+
+// ── SAVE / LOAD ──
+function save() {
+  try { localStorage.setItem("milkboy_v2", JSON.stringify({ records: state.records, paid: state.paid, price: state.price, vendor: state.vendor, notifTime: state.notifTime })); } catch(e){}
+}
+function load() {
+  try {
+    const d = JSON.parse(localStorage.getItem("milkboy_v2")||"{}");
+    if (d.records) state.records = d.records;
+    if (d.paid) state.paid = d.paid;
+    if (d.price) state.price = d.price;
+    if (d.vendor) state.vendor = d.vendor;
+    if (d.notifTime) state.notifTime = d.notifTime;
+  } catch(e){}
+}
+
+// ── TOAST ──
+let toastTimer;
+function showToast(msg, type="ok") {
+  const t = document.getElementById("toast");
+  t.textContent = msg; t.className = `toast ${type}`; t.style.display = "block";
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.style.display = "none"; }, 2400);
+}
+
+// ── HERO UPDATE ──
+function updateHero() {
+  const { liters, amt, count } = getTotals();
+  const key = getKey();
+  const isPaid = state.paid[key];
+  document.getElementById("statDays").textContent = count;
+  document.getElementById("statLiters").textContent = liters.toFixed(1)+"L";
+  document.getElementById("statAmt").textContent = "₹"+Math.round(amt);
+  document.getElementById("statPaid").textContent = isPaid ? "✅" : "⏳";
+  document.getElementById("statPaidLbl").textContent = isPaid ? "Paid" : "Unpaid";
+  const pb = document.getElementById("statPaidBox");
+  pb.style.background = isPaid ? "rgba(40,180,70,0.16)" : "rgba(255,255,255,0.075)";
+  document.getElementById("vendorSubtitle").textContent = state.vendor;
+}
+
+// ── CALENDAR ──
+function renderCalendar() {
+  const grid = document.getElementById("calGrid");
+  grid.innerHTML = "";
+  const days = daysIn(state.year, state.month);
+  const fd = firstDay(state.year, state.month);
+  const monthRec = getMonthRec();
+
+  for (let i=0; i<fd; i++) {
+    const el = document.createElement("div");
+    el.className = "cal-cell empty"; grid.appendChild(el);
+  }
+  for (let d=1; d<=days; d++) {
+    const isFuture = isThisMonth() && d > TODAY;
+    const isToday = isThisMonth() && d === TODAY;
+    const rec = monthRec[d];
+    const got = rec?.received;
+    const el = document.createElement("div");
+    let cls = "cal-cell ";
+    cls += isFuture ? "future " : got ? "got " : "plain ";
+    if (isToday) cls += "today ";
+    if (state.activeDay === d) cls += "selected ";
+    el.className = cls;
+    el.innerHTML = `<div class="cnum">${d}</div><div class="cdot">${got?"✅":isFuture?"":"·"}</div>${got&&rec?.qty?`<div class="cqty">${rec.qty}L</div>`:""}`;
+    if (!isFuture) el.addEventListener("click", () => openDay(d));
+    grid.appendChild(el);
+  }
+
+  const pct = Math.min(100, (Object.values(monthRec).filter(r=>r?.received).length / days)*100);
+  document.getElementById("progFill").style.width = pct+"%";
+  document.getElementById("progLbl").textContent = `${Object.values(monthRec).filter(r=>r?.received).length} of ${days} days tracked`;
+
+  document.getElementById("monthName").textContent = MONTHS[state.month];
+  document.getElementById("yearLbl").textContent = state.year;
+
+  renderDayPanel();
+  updateFab();
+}
+
+function openDay(d) {
+  state.activeDay = state.activeDay === d ? null : d;
+  renderCalendar();
+}
+
+function renderDayPanel() {
+  const panel = document.getElementById("dayPanel");
+  const d = state.activeDay;
+  if (!d || (isThisMonth() && d > TODAY)) { panel.innerHTML=""; return; }
+  const rec = getMonthRec()[d] || {};
+  const got = rec.received;
+  const todayLabel = isThisMonth() && d === TODAY ? " · Today" : "";
+  panel.innerHTML = `
+    <div class="day-panel">
+      <div class="panel-head">
+        <div class="panel-title">${MONTHS[state.month]} ${d}${todayLabel}</div>
+        <button class="close-btn" id="panelClose">×</button>
+      </div>
+      <div class="toggle-row ${got?"on":""}" id="toggleRow">
+        <div class="toggle-lbl"><span>${got?"🥛":"🫙"}</span>${got?"Milk Received":"Not Received"}</div>
+        <div class="sw ${got?"on":"off"}"><div class="knob ${got?"on":"off"}"></div></div>
+      </div>
+      ${got?`
+      <div class="fgroup">
+        <div class="flbl">Quantity</div>
+        <div class="stepper">
+          <button class="step-btn" id="stepMinus">−</button>
+          <div class="step-val" id="stepVal">${(rec.qty||0.5).toFixed(1)} L</div>
+          <button class="step-btn" id="stepPlus">+</button>
+        </div>
+      </div>`:""}
+      <div class="fgroup" style="margin-bottom:0">
+        <div class="flbl">Note (optional)</div>
+        <input class="finput" id="noteInput" placeholder="e.g. Gave extra today..." value="${rec.note||""}"/>
+      </div>
+    </div>`;
+
+  document.getElementById("panelClose").addEventListener("click", () => { state.activeDay=null; renderCalendar(); });
+  document.getElementById("toggleRow").addEventListener("click", () => {
+    const was = (state.records[getKey()]||{})[d]?.received;
+    if (!state.records[getKey()]) state.records[getKey()] = {};
+    state.records[getKey()][d] = { received: !was, qty: (state.records[getKey()][d]?.qty)||0.5, note: (state.records[getKey()][d]?.note)||"" };
+    save(); showToast(was?"Unmarked":"Milk received! 🥛"); renderCalendar(); updateHero(); updateSummary();
+  });
+  if (got) {
+    document.getElementById("stepMinus").addEventListener("click", () => {
+      const cur = state.records[getKey()][d]?.qty||0.5;
+      state.records[getKey()][d].qty = Math.max(0.5, cur-0.5);
+      save(); renderCalendar(); updateHero(); updateSummary();
+    });
+    document.getElementById("stepPlus").addEventListener("click", () => {
+      const cur = state.records[getKey()][d]?.qty||0.5;
+      state.records[getKey()][d].qty = Math.min(5, cur+0.5);
+      save(); renderCalendar(); updateHero(); updateSummary();
+    });
+  }
+  document.getElementById("noteInput").addEventListener("input", e => {
+    if (!state.records[getKey()]) state.records[getKey()] = {};
+    if (!state.records[getKey()][d]) state.records[getKey()][d] = { received: false, qty: 0.5, note: "" };
+    state.records[getKey()][d].note = e.target.value;
+    save();
+  });
+}
+
+// ── SUMMARY ──
+function updateSummary() {
+  const { liters, amt, count } = getTotals();
+  const days = daysIn(state.year, state.month);
+  const pct = Math.min(100, (count/days)*100);
+  const key = getKey();
+  const isPaid = state.paid[key];
+
+  document.getElementById("monthName2").textContent = MONTHS[state.month];
+  document.getElementById("yearLbl2").textContent = state.year;
+  document.getElementById("billAmount").textContent = "₹"+Math.round(amt);
+  document.getElementById("billSub").textContent = `${count} days · ${liters.toFixed(1)} liters`;
+  document.getElementById("sumDays").textContent = `${count} / ${days}`;
+  document.getElementById("sumLiters").textContent = `${liters.toFixed(1)} liters`;
+  document.getElementById("sumRate").textContent = `₹${state.price} / liter`;
+  document.getElementById("sumAmt").textContent = `₹${Math.round(amt)}`;
+
+  const ss = document.getElementById("sumStatus");
+  ss.textContent = isPaid ? "Paid ✅" : "Pending";
+  ss.className = "sum-val " + (isPaid ? "paid-color" : "pending");
+
+  document.getElementById("progFill2").style.width = pct+"%";
+  document.getElementById("progLbl2").textContent = `${Math.round(pct)}% of month tracked`;
+
+  const pb = document.getElementById("markPaidBtn");
+  pb.textContent = isPaid ? "✅ Paid — Tap to Undo" : "💰 Mark Month as Paid";
+  pb.className = "cta " + (isPaid ? "cta-green" : "cta-dark");
+}
+
+// ── FAB ──
+function updateFab() {
+  const fab = document.getElementById("fabWrap");
+  const btn = document.getElementById("fabBtn");
+  if (state.tab !== "calendar" || !isThisMonth()) { fab.style.display="none"; return; }
+  fab.style.display="block";
+  const got = (getMonthRec()[TODAY]||{}).received;
+  btn.textContent = got ? "✅ Today's Milk Marked" : "🥛 Mark Today's Milk";
+  btn.className = "cta " + (got ? "cta-green" : "cta-dark");
+}
+
+// ── SWITCH TAB ──
+function switchTab(tab) {
+  state.tab = tab;
+  state.activeDay = null;
+  ["calendar","summary","settings"].forEach(t => {
+    document.getElementById("page-"+t).style.display = t===tab?"block":"none";
+  });
+  const tabbar = document.getElementById("tabbar");
+  const gear = document.getElementById("gearBtn");
+  if (tab === "settings") {
+    tabbar.style.display = "none";
+    gear.textContent = "✕";
+    document.getElementById("vendorInput").value = state.vendor;
+    document.getElementById("priceInput").value = state.price;
+    document.getElementById("notifTimeInput").value = state.notifTime;
+  } else {
+    tabbar.style.display = "flex";
+    gear.textContent = "⚙️";
+    document.querySelectorAll(".tab-btn").forEach(b => b.classList.toggle("active", b.dataset.tab===tab));
+  }
+  if (tab === "calendar") { renderCalendar(); }
+  if (tab === "summary") { updateSummary(); }
+  updateFab();
+  document.getElementById("scrollArea").scrollTop = 0;
+}
+
+// ── MONTH NAV ──
+function prevMonth() {
+  state.activeDay = null;
+  if (state.month===0) { state.month=11; state.year--; } else state.month--;
+  renderCalendar(); updateHero(); updateSummary();
+}
+function nextMonth() {
+  state.activeDay = null;
+  if (state.month===11) { state.month=0; state.year++; } else state.month++;
+  renderCalendar(); updateHero(); updateSummary();
+}
+
+// ── INIT ──
+load();
+setTimeout(() => {
+  document.getElementById("hero").classList.add("in");
+  document.getElementById("tabbar").classList.add("in");
+}, 60);
+
+// Wire up tabs
+document.querySelectorAll(".tab-btn").forEach(b => {
+  b.addEventListener("click", () => switchTab(b.dataset.tab));
+});
+
+// Gear
+document.getElementById("gearBtn").addEventListener("click", () => {
+  switchTab(state.tab === "settings" ? "calendar" : "settings");
+});
+
+// Month nav
+document.getElementById("prevBtn").addEventListener("click", prevMonth);
+document.getElementById("nextBtn").addEventListener("click", nextMonth);
+document.getElementById("prevBtn2").addEventListener("click", prevMonth);
+document.getElementById("nextBtn2").addEventListener("click", nextMonth);
+
+// Mark paid
+document.getElementById("markPaidBtn").addEventListener("click", () => {
+  const key = getKey();
+  state.paid[key] = !state.paid[key];
+  save(); showToast(state.paid[key]?"Marked as paid 💰":"Payment removed"); updateSummary(); updateHero();
+});
+
+// FAB
+document.getElementById("fabBtn").addEventListener("click", () => {
+  const key = getKey();
+  if (!state.records[key]) state.records[key] = {};
+  const was = state.records[key][TODAY]?.received;
+  state.records[key][TODAY] = { received: !was, qty: state.records[key][TODAY]?.qty||0.5, note: state.records[key][TODAY]?.note||"" };
+  state.activeDay = TODAY;
+  save(); showToast(was?"Unmarked":"Milk received! 🥛"); renderCalendar(); updateHero(); updateSummary();
+});
+
+// Settings inputs
+document.getElementById("vendorInput").addEventListener("input", e => { state.vendor=e.target.value; save(); updateHero(); });
+document.getElementById("priceInput").addEventListener("input", e => { state.price=Number(e.target.value)||60; save(); updateHero(); updateSummary(); });
+document.getElementById("notifTimeInput").addEventListener("input", e => { state.notifTime=e.target.value; save(); });
+document.getElementById("notifBtn").addEventListener("click", async () => {
+  if (!("Notification" in window)) return showToast("Not supported in this browser","err");
+  const p = await Notification.requestPermission();
+  showToast(p==="granted"?"Notifications enabled 🔔":"Permission denied", p==="granted"?"ok":"err");
+});
+
+// PWA install
+let deferredPrompt;
+window.addEventListener("beforeinstallprompt", e => {
+  e.preventDefault(); deferredPrompt = e;
+  document.getElementById("installBanner").classList.add("show");
+});
+document.getElementById("installBtn").addEventListener("click", async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  document.getElementById("installBanner").classList.remove("show");
+});
+document.getElementById("installDismiss").addEventListener("click", () => {
+  document.getElementById("installBanner").classList.remove("show");
+});
+
+// Initial render
+renderCalendar();
+updateHero();
+updateSummary();
+switchTab("calendar");
+</script>
+</body>
+</html>
