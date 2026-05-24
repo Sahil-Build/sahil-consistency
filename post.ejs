@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>post</title>
+  </head>
+  <body>
+    <div class="post-content">
+      <%= post.title %> <%= post.content %> <%= post.date %>
+    </div>
+    <div class="delete">
+      <form action="/posts/<%= post.id %>/delete" method="POST">
+        <button type="submit">Delete Post</button>
+      </form>
+    </div>
+  </body>
+</html>
