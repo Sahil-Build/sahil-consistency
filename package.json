@@ -1,17 +1,17 @@
 {
-  "dependencies": {
-    "fs": "^0.0.1-security",
-    "inquirer": "^9.3.8",
-    "qr-image": "^3.2.0"
-  },
-  "name": "2.4-qr-code-project",
+  "name": "blog-app",
   "version": "1.0.0",
-  "type": "module",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": ""
+  "type": "module",
+  "dependencies": {
+    "ejs": "^5.0.2",
+    "express": "^5.2.1"
+  }
 }
