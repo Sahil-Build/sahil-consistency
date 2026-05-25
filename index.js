@@ -1,48 +1,22 @@
-import express from "express";
-const app = express();
-const PORT = 3000;
-let posts = [];
+var randomNumber1 = Math.floor(Math.random() * 6) + 1;
+var randomNumber2 = Math.floor(Math.random() * 6) + 1;
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public"));
+var randomDiceImage1 = "dice" + randomNumber1 + ".png";
+var randomDiceImage2 = "dice" + randomNumber2 + ".png";
 
-app.set("view engine", "ejs");
+var randomImageSource1 = "/images/" + randomDiceImage1;
+var randomImageSource2 = "/images/" + randomDiceImage2;
 
-app.get("/", (req, res) => {
-  res.render("index.ejs");
-});
+var image1 = document.querySelectorAll("img")[0];
+var image2 = document.querySelectorAll("img")[1];
 
-app.get("/posts", (req, res) => {
-  res.render("posts.ejs", { posts });
-});
+image1.setAttribute("src", randomImageSource1);
+image2.setAttribute("src", randomImageSource2);
 
-app.get("/posts/new", (req, res) => {
-  res.render("new.ejs");
-});
-
-app.post("/posts", (req, res) => {
-  const post = {
-    id: posts.length + 1,
-    title: req.body.title,
-    content: req.body.content,
-    date: new Date().toLocaleDateString(),
-  };
-  posts.push(post);
-  res.redirect("/posts");
-});
-
-app.get("/posts/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  const post = posts.find((p) => p.id === id);
-  res.render("post.ejs", { post: post });
-});
-
-app.post("/posts/:id/delete", (req, res) => {
-  const id = parseInt(req.params.id);
-  posts = posts.filter((p) => p.id !== id);
-  res.redirect("/posts");
-});
-
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+if (randomNumber1 > randomNumber2) {
+  document.querySelector("h1").textContent = "player 1 wins!";
+} else if (randomNumber2 > randomNumber1) {
+  document.querySelector("h1").textContent = "player 2 wins!!";
+} else {
+  document.querySelector("h1").textContent = "Draw!!!";
+}
