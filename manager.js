@@ -1,28 +1,25 @@
 const fs = require("fs");
-const content = "hello node is smooth";
-const update = "- added by Node";
+const inquirer = require("inquirer");
+const qr = require("qrcode");
+const chalk = require("chalk");
 
-fs.writeFile("notes.txt", content, "utf8", (err) => {
-  if (err) {
-    console.log("Error took place, cant write the file");
-  } else {
-    console.log("file written successfully");
-    fs.readFile("notes.txt", "utf8", (err, data) => {
+inquirer
+  .prompt([
+    {
+      type: "input",
+      name: "url",
+      message: "enter the url of the file you want to qr",
+    },
+  ])
+  .then((answers) => {
+    const url = answers.url;
+    qr.toFile("qr.png", url, (err) => {
       if (err) {
-        console.log("theres a error in reading thr file");
+        console.log(chalk.red("Error generating qr code:", err));
       } else {
-        console.log("now reading the file for 1st time:", data);
-        fs.appendFile("notes.txt", update, "utf8", (err) => {
-          if (err) {
-            console.log("error appending the file");
-          } else {
-            console.log("appended successfully!");
-            fs.readFile("notes.txt", "utf8", (err, data) => {
-              console.log("reading for second time:", data);
-            });
-          }
-        });
+        console.log(
+          chalk.green("QR code generated successfully! saved as qr.png"),
+        );
       }
     });
-  }
-});
+  });
