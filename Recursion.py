@@ -1,8 +1,8 @@
 n = int(input())
-def print_name(n):
-  if n < 1:
-    return
-  print(n)
-  print_name(n-1)
-print_name(n)
+def num(i,n):
+  if (i>n):
+    return 
+  num (i+1,n)
+  print(i)
+num(1,n)
   
