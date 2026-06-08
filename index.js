@@ -1,29 +1,21 @@
 const express = require("express");
-const band = express();
-band.use(express.json());
+const app = express();
+app.use(express.json());
+const port = 4000;
 
-band.listen(8000, () => {
-  console.log("server is is running on 8000");
+app.listen(port, () => {
+  console.log("listening to the port", port);
 });
 
-band.get("/bands", (req, res) => {
-  res.send("Fetching all bands");
-});
+const checkPassword = (req, res, next) => {
+  const password = req.query.password;
+  if (password && password == "ilovecoding") {
+    next();
+  } else {
+    res.send("password is wrong, try again!");
+  }
+};
 
-band.get("/bands/search", (req, res) => {
-  res.send("searching bands from: " + req.query.country);
-});
-
-band.get("/bands/:name", (req, res) => {
-  res.send("Fetching Band: " + req.params.name);
-});
-
-band.delete("/bands/:name", (req, res) => {
-  res.send("Deleted band: " + req.params.name);
-});
-
-band.post("/bands", (req, res) => {
-  const name = req.body.name;
-  const genre = req.body.genre;
-  res.send("band created: " + name + " - genre: " + genre);
+app.get("/secret", checkPassword, (req, res) => {
+  res.send("welcome, here is the secret:67");
 });
