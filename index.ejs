@@ -3,13 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ejs</title>
+    <title>report card</title>
   </head>
   <body>
-    <% for(let i=0;i<items.length;i++){ %>
-        <li><%= items[i] %></li>
+    <h1><%= name %>'s report card</h1>
+    <% for(let i=0;i<marks.length;i++) { %>
+        <li> <%= marks[i] %></li>
     <% } %>
-    <%- plain %>
-    <%= plain %>
+    <p>result: <%= result %></p>
+    <br>
   </body>
 </html>
