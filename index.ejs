@@ -3,14 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>report card</title>
+    <title>welcome page</title>
   </head>
   <body>
-    <h1><%= name %>'s report card</h1>
-    <% for(let i=0;i<marks.length;i++) { %>
-        <li> <%= marks[i] %></li>
-    <% } %>
-    <p>result: <%= result %></p>
-    <br>
+    <h1>welcome <%= name %></h1>
+    <a href="/hobbies">see my hobbies</a>
   </body>
 </html>
