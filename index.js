@@ -1,17 +1,19 @@
 const express = require("express");
 const app = express();
-const port = 8080;
+const port = "8080";
 app.set("view engine", "ejs");
-const hobbies = ["reading", "sleeping", "gaming"];
 
 app.listen(port, () => {
-  console.log("listening to the server:", port);
+  console.log("listening to the port:", port);
 });
 
 app.get("/", (req, res) => {
   res.render("index", { name: "sahil" });
 });
 
-app.get("/hobbies", (req, res) => {
-  res.render("hobbies", { hobbies: hobbies });
+app.get("/instruments", (req, res) => {
+  res.render("index", {
+    items: ["guitar", "drums", "piano"],
+    plain: "<h1>hello</h1>",
+  });
 });
