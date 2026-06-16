@@ -3,10 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>welcome page</title>
+    <title>ejs</title>
   </head>
   <body>
-    <h1>welcome <%= name %></h1>
-    <a href="/hobbies">see my hobbies</a>
+    <% for(let i=0;i<items.length;i++){ %>
+        <li><%= items[i] %></li>
+    <% } %>
+    <%- plain %>
+    <%= plain %>
   </body>
 </html>
