@@ -3,13 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ejs</title>
+    <title>Band-Generator</title>
   </head>
   <body>
-    <% for(let i=0;i<items.length;i++){ %>
-        <li><%= items[i] %></li>
-    <% } %>
-    <%- plain %>
-    <%= plain %>
+    <h1>welcome to the band name generator!!!</h1>
+    <p>behold, tap the button once and generate <strong>Band-Name</strong></p>
+    <a href="/"><button>Generate Band Name</button></a>
+    <h2>your Band Name is:<%= bandName %></h2>
+    <p>
+      don't like it?? tap the button again to generate different
+      <strong>Band-Name</strong>
+    </p>
   </body>
 </html>
