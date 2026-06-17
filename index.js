@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = "8080";
+const port = 8080;
 app.set("view engine", "ejs");
 
 app.listen(port, () => {
@@ -8,12 +8,31 @@ app.listen(port, () => {
 });
 
 app.get("/", (req, res) => {
-  res.render("index", { name: "sahil" });
-});
+  const adjectives = [
+    "crazy",
+    "lunatic",
+    "abomination",
+    "dark",
+    "fiend",
+    "exclamitor",
+    "golden",
+    "throttle",
+  ];
+  const nouns = [
+    "dragons",
+    "speedsters",
+    "incredible",
+    "eagles",
+    "spartans",
+    "executioner",
+    "legends",
+    "wolves",
+  ];
 
-app.get("/instruments", (req, res) => {
-  res.render("index", {
-    items: ["guitar", "drums", "piano"],
-    plain: "<h1>hello</h1>",
-  });
+  let bandName =
+    adjectives[Math.floor(Math.random() * adjectives.length)] +
+    " " +
+    nouns[Math.floor(Math.random() * nouns.length)];
+
+  res.render("index", { bandName });
 });
