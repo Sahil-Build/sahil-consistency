@@ -2,37 +2,16 @@ const express = require("express");
 const app = express();
 const port = 8080;
 app.set("view engine", "ejs");
+app.use(express.urlencoded({ extended: true }));
 
 app.listen(port, () => {
   console.log("listening to the port:", port);
 });
 
 app.get("/", (req, res) => {
-  const adjectives = [
-    "crazy",
-    "lunatic",
-    "abomination",
-    "dark",
-    "fiend",
-    "exclamitor",
-    "golden",
-    "throttle",
-  ];
-  const nouns = [
-    "dragons",
-    "speedsters",
-    "incredible",
-    "eagles",
-    "spartans",
-    "executioner",
-    "legends",
-    "wolves",
-  ];
+  res.render("index");
+});
 
-  let bandName =
-    adjectives[Math.floor(Math.random() * adjectives.length)] +
-    " " +
-    nouns[Math.floor(Math.random() * nouns.length)];
-
-  res.render("index", { bandName });
+app.post("/submit", (req, res) => {
+  console.log(req.body);
 });
