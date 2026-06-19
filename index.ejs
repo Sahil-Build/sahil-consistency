@@ -12,5 +12,9 @@
       <input type="text" name="username" />
       <button type="submit">send</button>
     </form>
+
+   <% names.forEach(function(name){ %>
+    <li><%= name %></li>
+  <% }); %>
   </body>
 </html>
