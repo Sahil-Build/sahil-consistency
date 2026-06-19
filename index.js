@@ -9,9 +9,11 @@ app.listen(port, () => {
 });
 
 app.get("/", (req, res) => {
-  res.render("index");
+  res.render("index", { names: [] });
 });
 
 app.post("/submit", (req, res) => {
   console.log(req.body);
+  const names = ["sahil", "sam", "alfred"];
+  res.render("index", { names: names });
 });
