@@ -1,24 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>All Posts</title>
-    <link rel="stylesheet" href="/css/styles.css">
-</head>
-<body>
-    <h1>All Posts</h1>
-    <a href="/posts/new">+ Write New Post</a>
-    
-    <% if (posts.length === 0) { %>
-        <p>No posts yet. Write your first one!</p>
-    <% } else { %>
-        <% posts.forEach(post => { %>
-            <div class="post-card">
-                <h2><%= post.title %></h2>
-                <p><%= post.date %></p>
-                <a href="/posts/<%= post.id %>">Read More</a>
-            </div>
-        <% }) %>
-    <% } %>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>post read</title>
+  </head>
+  <body>
+    <h1><%= post.title %></h1>
+    <p><%= post.content %></p>
+  </body>
 </html>
