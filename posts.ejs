@@ -8,5 +8,15 @@
   <body>
     <h1><%= post.title %></h1>
     <p><%= post.content %></p>
+
+    <div>
+      <a href="/posts/<%= post.id %>/edit">Edit this post</a>
+      <form action="/posts/<%= post.id %>/delete" method="POST">
+        <button type="submit">DELETE</button>
+      </form>
+    </div>
+    <div>
+      <a href="/"> &larr; Back to the Homepage</a>
+    </div>
   </body>
 </html>
