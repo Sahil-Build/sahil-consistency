@@ -6,8 +6,13 @@
     <title>blogs home page</title>
 </head>
 <body>
+    <a href="/posts/new">+Add new post</a>
     <% posts.forEach(function(items) { %>
-        <li> <a href="/posts/<%= items.id%>"><%= items.title %></a></li>
+        <li> <a href="/posts/<%= items.id%>"><%= items.title %></a> <a href="/posts/<%= items.id %>/edit">EDit </a>
+        <form action="/posts/<%= items.id %>/delete" method="POST">
+            <button type="submit">Delete</button>
+        </form>
+        </li>
     <% }); %>
 </body>
 </html>
