@@ -32,10 +32,33 @@ app.get("/posts/:id", (req, res) => {
   res.render("posts", { post });
 });
 
+app.get("/posts/:id/edit", (req, res) => {
+  const post = posts.find(function (p) {
+    return p.id == req.params.id;
+  });
+  res.render("editpost", { post: post });
+});
+
 app.post("/posts", (req, res) => {
   const title = req.body.title;
   const content = req.body.content;
   let newPost = { id: posts.length + 1, title: title, content: content };
   posts.push(newPost);
+  res.redirect("/");
+});
+
+app.post("/posts/:id", (req, res) => {
+  const post = posts.find(function (p) {
+    return p.id == req.params.id;
+  });
+  post.title = req.body.title;
+  post.content = req.body.content;
+  res.redirect("/");
+});
+
+app.post("/posts/:id/delete", (req, res) => {
+  posts = posts.filter(function (p) {
+    return p.id != req.params.id;
+  });
   res.redirect("/");
 });
