@@ -1,67 +1,77 @@
 import express from "express";
 import axios from "axios";
+import bodyParser from "body-parser";
 
 const app = express();
 const port = 3000;
 const API_URL = "https://secrets-api.appbrewery.com";
 
-// TODO: Replace the values below with your own before running this file.
-const yourUsername = "sahil";
-const yourPassword = "sahil123";
-const yourAPIKey = "269c9c8e-2c76-4275-b798-c42ffd50f674";
-const yourBearerToken = "8d5182b1-cc39-4396-94ee-f776c03825fa";
-
-app.get("/", (req, res) => {
-  res.render("index.ejs", { content: "API Response." });
-});
-
-app.get("/noAuth", async (req, res) => {
-  try {
-    const result = await axios.get(API_URL + "/random");
-    res.render("index.ejs", { content: JSON.stringify(result.data) });
-  } catch (error) {
-    res.status(404).send(error.message);
-  }
-});
-
-app.get("/basicAuth", async (req, res) => {
-  try {
-    const result = await axios.get(API_URL + "/all?page=2", {
-      auth: {
-        username: yourUsername,
-        password: yourPassword,
-      },
-    });
-    res.render("index.ejs", { content: JSON.stringify(result.data) });
-  } catch (error) {
-    res.status(404).send(error.message);
-  }
-});
-
-app.get("/apiKey", async (req, res) => {
-  try {
-    const result = await axios.get(API_URL + "/filter", {
-      params: {
-        score: 5,
-        apiKey: yourAPIKey,
-      },
-    });
-    res.render("index.ejs", { content: JSON.stringify(result.data) });
-  } catch (error) {
-    res.status(404).send(error.message);
-  }
-});
-
+//Add your own bearer token from the previous lesson.
+const yourBearerToken = "08f3026d-9c6c-4d88-a3b2-c579dc106247";
 const config = {
   headers: { Authorization: `Bearer ${yourBearerToken}` },
 };
 
-app.get("/bearerToken", async (req, res) => {
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.get("/", (req, res) => {
+  res.render("index.ejs", { content: "Waiting for data..." });
+});
+
+app.post("/get-secret", async (req, res) => {
+  const searchId = req.body.id;
   try {
-    const result = await axios.get(API_URL + "/secrets/2", config);
+    const result = await axios.get(API_URL + "/secrets/" + searchId, config);
     res.render("index.ejs", { content: JSON.stringify(result.data) });
   } catch (error) {
-    res.status(404).send(error.message);
+    res.render("index.ejs", { content: JSON.stringify(error.response.data) });
+  }
+});
+
+app.post("/post-secret", async (req, res) => {
+  try {
+    const result = await axios.post(API_URL + "/secrets", req.body, config);
+    res.render("index.ejs", { content: JSON.stringify(result.data) });
+  } catch (error) {
+    res.render("index.ejs", { content: JSON.stringify(error.response.data) });
+  }
+});
+
+app.post("/put-secret", async (req, res) => {
+  const searchId = req.body.id;
+  try {
+    const result = await axios.put(
+      API_URL + "/secrets/" + searchId,
+      req.body,
+      config
+    );
+    res.render("index.ejs", { content: JSON.stringify(result.data) });
+  } catch (error) {
+    res.render("index.ejs", { content: JSON.stringify(error.response.data) });
+  }
+});
+
+app.post("/patch-secret", async (req, res) => {
+  const searchId = req.body.id;
+  try {
+    const result = await axios.patch(
+      API_URL + "/secrets/" + searchId,
+      req.body,
+      config
+    );
+    res.render("index.ejs", { content: JSON.stringify(result.data) });
+  } catch (error) {
+    res.render("index.ejs", { content: JSON.stringify(error.response.data) });
+  }
+});
+
+app.post("/delete-secret", async (req, res) => {
+  const searchId = req.body.id;
+  try {
+    const result = await axios.delete(API_URL + "/secrets/" + searchId, config);
+    res.render("index.ejs", { content: JSON.stringify(result.data) });
+  } catch (error) {
+    res.render("index.ejs", { content: JSON.stringify(error.response.data) });
   }
 });
 
