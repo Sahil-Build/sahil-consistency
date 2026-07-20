@@ -1,87 +1,90 @@
 import express from "express";
 import axios from "axios";
+import bodyParser from "body-parser";
 
 const app = express();
 const port = 3000;
-const API_URL = "https://secrets-api.appbrewery.com/";
+const API_URL = "https://secrets-api.appbrewery.com";
 
-//TODO 1: Fill in your values for the 3 types of auth.
-const yourUsername = "sahil";
-const yourPassword = "sahil123";
-const yourAPIKey = "269c9c8e-2c76-4275-b798-c42ffd50f674";
+// HINTs: Use the axios documentation as well as the video lesson to help you.
+// https://axios-http.com/docs/post_example
+// Use the Secrets API documentation to figure out what each route expects and how to work with it.
+// https://secrets-api.appbrewery.com/
+
+//TODO 1: Add your own bearer token from the previous lesson.
 const yourBearerToken = "8d5182b1-cc39-4396-94ee-f776c03825fa";
+const config = {
+  headers: { Authorization: `Bearer ${yourBearerToken}` },
+};
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-  res.render("index.ejs", { content: "API Response." });
+  res.render("index.ejs", { content: "Waiting for data..." });
 });
 
-app.get("/noAuth", async (req, res) => {
-  //TODO 2: Use axios to hit up the /random endpoint
-  //The data you get back should be sent to the ejs file as "content"
-  //Hint: make sure you use JSON.stringify to turn the JS object from axios into a string.
+app.post("/get-secret", async (req, res) => {
+  const searchId = req.body.id;
   try {
-    const result = await axios.get(API_URL + "random");
-    const data = result.data;
-    res.render("index.ejs", { content: JSON.stringify(data) });
+    const result = await axios.get(API_URL + "/secrets/" + searchId, config);
+    res.render("index.ejs", { content: JSON.stringify(result.data) });
   } catch (error) {
-    res.status(404).send(error.message);
+    res.render("index.ejs", { content: JSON.stringify(error.response.data) });
   }
 });
 
-app.get("/basicAuth", async (req, res) => {
-  //TODO 3: Write your code here to hit up the /all endpoint
-  //Specify that you only want the secrets from page 2
-  //HINT: This is how you can use axios to do basic auth:
-  // https://stackoverflow.com/a/74632908
-  /*
-   axios.get(URL, {
-      auth: {
-        username: "abc",
-        password: "123",
-      },
-    });
-  */
+app.post("/post-secret", async (req, res) => {
+  // TODO 2: Use axios to POST the data from req.body to the secrets api servers.
   try {
-    const result = await axios.get(API_URL + "all", {
-      params: { page: 2 },
-      auth: {
-        username: yourUsername,
-        password: yourPassword,
-      },
-    });
-    const data = result.data;
-    res.render("index.ejs", { content: JSON.stringify(data) });
+    const result = await axios.post(
+      API_URL + "/secrets",
+      { secret: req.body.secret, score: req.body.score },
+      config,
+    );
+    res.render("index.ejs", { content: JSON.stringify(result.data) });
   } catch (error) {
-    res.status(404).send(error.message);
+    res.render("index.ejs", { content: JSON.stringify(error.response.data) });
   }
 });
 
-app.get("/apiKey", async (req, res) => {
+app.post("/put-secret", async (req, res) => {
+  const searchId = req.body.id;
+  // TODO 3: Use axios to PUT the data from req.body to the secrets api servers.
   try {
-    const result = await axios.get(API_URL + "filter", {
-      params: { score: 5, apiKey: yourAPIKey },
-    });
-    const data = result.data;
-    res.render("index.ejs", { content: JSON.stringify(data) });
+    const result = await axios.put(
+      API_URL + "/secrets/" + searchId,
+      { secret: req.body.secret, score: req.body.score },
+      config,
+    );
+    res.render("index.ejs", { content: JSON.stringify(result.data) });
   } catch (error) {
-    res.status(404).send(error.message);
+    res.render("index.ejs", { content: JSON.stringify(error.response.data) });
   }
-  //TODO 4: Write your code here to hit up the /filter endpoint
-  //Filter for all secrets with an embarassment score of 5 or greater
-  //HINT: You need to provide a query parameter of apiKey in the request.
 });
 
-app.get("/bearerToken", async (req, res) => {
+app.post("/patch-secret", async (req, res) => {
+  const searchId = req.body.id;
+  // TODO 4: Use axios to PATCH the data from req.body to the secrets api servers.
   try {
-    const result = await axios.get(API_URL + "secrets/42", {
-      headers: {
-        Authorization: `Bearer ${yourBearerToken}`,
-      },
-    });
-    const data = result.data;
-    res.render("index.ejs", { content: JSON.stringify(data) });
+    const result = await axios.patch(
+      API_URL + "/secrets/" + searchId,
+      { secret: req.body.secret, score: req.body.score },
+      config,
+    );
+    res.render("index.ejs", { content: JSON.stringify(result.data) });
   } catch (error) {
-    res.status(404).send(error.message);
+    res.render("index.ejs", { content: JSON.stringify(error.response.data) });
+  }
+});
+
+app.post("/delete-secret", async (req, res) => {
+  const searchId = req.body.id;
+  // TODO 5: Use axios to DELETE the item with searchId from the secrets api servers.
+  try {
+    const result = await axios.delete(API_URL + "/secrets/" + searchId, config);
+    res.render("index.ejs", { content: JSON.stringify(result.data) });
+  } catch (error) {
+    res.render("index.ejs", { content: JSON.stringify(error.response.data) });
   }
 });
 
