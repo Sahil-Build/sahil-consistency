@@ -1,0 +1,10 @@
+<%- include('partials/header') %>
+
+<!-- your loop/content goes here -->
+ <% countries.forEach((country) =>{ %>
+    <%= country.name.common %>
+    <img src="<%= country.flags.png %>" alt="flag" />
+
+ <% }); %>
+
+<%- include('partials/footer') %>
