@@ -2,11 +2,13 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AniLog</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoDash</title>
 </head>
 <body>
-    <h1>AniLog 🎬</h1>
-    <p>Track your anime journey.</p>
+    <h1>CryptoDash</h1>
+    <% coins.forEach(coin => { %>
+        <li><%= coin.name %> - $<%= coin.current_price %></li>
+    <% }) %>
 </body>
 </html>
