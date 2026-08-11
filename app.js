@@ -1,14 +1,14 @@
-import express from "express";
-import animeRoutes from "./routes/animeRoutes.js";
+const express = require("express");
+const { getTopCoins } = require("./utils/coingecko.js");
 const app = express();
 const PORT = 8080;
-
 app.set("view engine","ejs");
 app.use(express.static("public"));
-app.use("/", animeRoutes);
 
-app.get("/",(req,res)=>{
-    res.render("index.ejs");
+
+app.get("/",async (req,res)=>{
+    const coins = await getTopCoins();
+    res.render("index.ejs", { coins });
 });
 
 app.listen(PORT,()=>{
