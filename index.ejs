@@ -8,7 +8,7 @@
 <body>
     <h1>CryptoDash</h1>
     <% coins.forEach(coin => { %>
-        <li><%= coin.name %> - $<%= coin.current_price %></li>
+        <li><a href="/coin/<%= coin.id %>"><%= coin.name %> - $<%= coin.current_price %></a></li>
     <% }) %>
 </body>
 </html>
