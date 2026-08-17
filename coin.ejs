@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coin details</title>
+</head>
+<body>
+    <% const market = coin.market_data; %>
+
+<h1><%= coin.name %> (<%= coin.symbol %>)</h1>
+<img src="<%= coin.image.large %>" alt="<%= coin.name %>">
+
+<p>Rank: #<%= market.market_cap_rank %></p>
+<p>Price: $<%= market.current_price.usd %></p>
+<p>24h Change: <%= market.price_change_percentage_24h %>%</p>
+<p>24h High: $<%= market.high_24h.usd %></p>
+<p>24h Low: $<%= market.low_24h.usd %></p>
+<p>Market Cap: $<%= market.market_cap.usd %></p>
+<p>Volume: $<%= market.total_volume.usd %></p>
+</body>
+</html>
