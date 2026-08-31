@@ -4,11 +4,202 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CryptoDash</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="icon" type="image/png" href="/images/logo.png">
 </head>
-<body>
-    <h1>CryptoDash</h1>
-    <% coins.forEach(coin => { %>
-        <li><a href="/coin/<%= coin.id %>"><%= coin.name %> - $<%= coin.current_price %></a></li>
-    <% }) %>
+<body data-theme="dark">
+    <header class="site-header">
+        <a href="/" class="logo">
+    <img src="/images/logo.png" alt="CryptoDash logo" class="logo-img">
+    CryptoDash
+</a>
+        <div class="group">
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="search-icon">
+                <g>
+                    <path d="M21.53 20.47l-3.66-3.66C19.195 15.24 20 13.214 20 11c0-4.97-4.03-9-9-9s-9 4.03-9 9 4.03 9 9 9c2.215 0 4.24-.804 5.808-2.13l3.66 3.66c.147.146.34.22.53.22s.385-.073.53-.22c.295-.293.295-.767.002-1.06zM3.5 11c0-4.135 3.365-7.5 7.5-7.5s7.5 3.365 7.5 7.5-3.365 7.5-7.5 7.5-7.5-3.365-7.5-7.5z"></path>
+                </g>
+            </svg>
+            <input id="search-input" class="input" type="search" placeholder="Search coins..." name="searchbar" />
+        </div>
+        <button id="currency-toggle" class="currency-toggle">USD</button>
+        <div class="theme-toggle-wrap">
+            <input id="dark-mode" class="toggle" type="checkbox">
+            <label for="dark-mode" class="sr">Toggle dark mode</label>
+            <svg class="icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+            </svg>
+            <svg class="icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3"/>
+                <line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/>
+                <line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="18.36"/>
+            </svg>
+        </div>
+    </header>
+
+    <section class="movers">
+        <div class="mover-card gainers">
+            <h3>Top Gainers</h3>
+            <%
+                const sorted = [...coins].sort((a, b) => b.price_change_percentage_24h - a.price_change_percentage_24h);
+                const topGainers = sorted.slice(0, 3);
+                const topLosers = sorted.slice(-3).reverse();
+            %>
+            <% topGainers.forEach(coin => { %>
+                <div class="mover-row" onclick="window.location='/coin/<%= coin.id %>'">
+                    <img src="<%= coin.image %>" alt="<%= coin.name %>">
+                    <span><%= coin.symbol.toUpperCase() %></span>
+                    <span class="change up">+<%= coin.price_change_percentage_24h.toFixed(2) %>%</span>
+                </div>
+            <% }) %>
+        </div>
+
+        <div class="mover-card losers">
+            <h3>Top Losers</h3>
+            <% topLosers.forEach(coin => { %>
+                <div class="mover-row" onclick="window.location='/coin/<%= coin.id %>'">
+                    <img src="<%= coin.image %>" alt="<%= coin.name %>">
+                    <span><%= coin.symbol.toUpperCase() %></span>
+                    <span class="change down"><%= coin.price_change_percentage_24h.toFixed(2) %>%</span>
+                </div>
+            <% }) %>
+        </div>
+    </section>
+
+    <main>
+        <table class="coin-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Coin</th>
+                    <th class="sortable" data-sort="price">Price <span class="sort-arrow"></span></th>
+                    <th class="sortable" data-sort="change">24h % <span class="sort-arrow"></span></th>
+                    <th class="sortable" data-sort="marketcap">Market Cap <span class="sort-arrow"></span></th>
+                    <th>Volume</th>
+                    <th>7d</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% coins.forEach(coin => { %>
+                    <tr onclick="window.location='/coin/<%= coin.id %>'"
+                        data-name="<%= coin.name.toLowerCase() %> <%= coin.symbol.toLowerCase() %>"
+                        data-price="<%= coin.current_price %>"
+                        data-change="<%= coin.price_change_percentage_24h %>"
+                        data-marketcap="<%= coin.market_cap %>"
+                        data-price-usd="<%= coin.current_price %>"
+                        data-price-inr="<%= coin.price_inr %>"
+                        data-marketcap-usd="<%= coin.market_cap %>"
+                        data-marketcap-inr="<%= coin.market_cap_inr %>"
+                        data-volume-usd="<%= coin.total_volume %>"
+                        data-volume-inr="<%= coin.volume_inr %>">
+                        <td class="rank"><%= coin.market_cap_rank %></td>
+                        <td class="coin-cell">
+                            <div class="coin-name">
+                                <span class="rank-badge"><%= coin.market_cap_rank %></span>
+                                <img src="<%= coin.image %>" alt="<%= coin.name %>" class="coin-logo">
+                                <span><%= coin.name %></span>
+                                <span class="symbol"><%= coin.symbol.toUpperCase() %></span>
+                            </div>
+                        </td>
+                        <td class="price" data-field="price" data-label="Price">$<%= coin.current_price.toLocaleString() %></td>
+                        <td class="change <%= coin.price_change_percentage_24h >= 0 ? 'up' : 'down' %>" data-label="24h %">
+                            <%= coin.price_change_percentage_24h.toFixed(2) %>%
+                        </td>
+                        <td class="market-cap" data-field="marketcap" data-label="Market Cap">$<%= coin.market_cap.toLocaleString() %></td>
+                        <td class="volume" data-field="volume" data-label="Volume">$<%= coin.total_volume.toLocaleString() %></td>
+                        <td class="sparkline" data-label="7d">
+                            <%
+                                const prices = coin.sparkline_in_7d.price;
+                                const min = Math.min(...prices);
+                                const max = Math.max(...prices);
+                                const points = prices.map((price, i) => {
+                                    const x = (i / (prices.length - 1)) * 100;
+                                    const y = 30 - ((price - min) / (max - min)) * 30;
+                                    return `${x},${y}`;
+                                }).join(' ');
+                            %>
+                            <svg viewBox="0 0 100 30" class="sparkline-svg">
+                                <polyline points="<%= points %>" fill="none" stroke="<%= coin.price_change_percentage_24h >= 0 ? 'var(--up)' : 'var(--down)' %>" stroke-width="1.5" />
+                            </svg>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </main>
+
+    <script>
+        const searchInput = document.getElementById('search-input');
+        const rows = document.querySelectorAll('.coin-table tbody tr');
+
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            rows.forEach(row => {
+                const name = row.getAttribute('data-name');
+                row.style.display = name.includes(query) ? '' : 'none';
+            });
+        });
+
+        const headers = document.querySelectorAll('.sortable');
+        let currentSort = { column: null, ascending: true };
+
+        headers.forEach(header => {
+            header.addEventListener('click', () => {
+                const column = header.getAttribute('data-sort');
+                const tbody = document.querySelector('.coin-table tbody');
+                const rowsArray = Array.from(tbody.querySelectorAll('tr'));
+
+                if (currentSort.column === column) {
+                    currentSort.ascending = !currentSort.ascending;
+                } else {
+                    currentSort.column = column;
+                    currentSort.ascending = true;
+                }
+
+                rowsArray.sort((a, b) => {
+                    const valA = parseFloat(a.getAttribute(`data-${column}`));
+                    const valB = parseFloat(b.getAttribute(`data-${column}`));
+                    return currentSort.ascending ? valA - valB : valB - valA;
+                });
+
+                rowsArray.forEach(row => tbody.appendChild(row));
+
+                document.querySelectorAll('.sort-arrow').forEach(arrow => arrow.textContent = '');
+                header.querySelector('.sort-arrow').textContent = currentSort.ascending ? ' ↑' : ' ↓';
+            });
+        });
+
+        const themeToggle = document.getElementById('dark-mode');
+        themeToggle.addEventListener('change', () => {
+            const isDark = !themeToggle.checked;
+            document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        });
+
+        const currencyToggle = document.getElementById('currency-toggle');
+        let currentCurrency = 'usd';
+
+        currencyToggle.addEventListener('click', () => {
+            currentCurrency = currentCurrency === 'usd' ? 'inr' : 'usd';
+            currencyToggle.textContent = currentCurrency.toUpperCase();
+            const symbol = currentCurrency === 'usd' ? '$' : '₹';
+
+            rows.forEach(row => {
+                const priceVal = row.getAttribute(`data-price-${currentCurrency}`);
+                const marketcapVal = row.getAttribute(`data-marketcap-${currentCurrency}`);
+                const volumeVal = row.getAttribute(`data-volume-${currentCurrency}`);
+
+                row.querySelector('[data-field="price"]').textContent = symbol + Number(priceVal).toLocaleString();
+                row.querySelector('[data-field="marketcap"]').textContent = symbol + Number(marketcapVal).toLocaleString();
+                row.querySelector('[data-field="volume"]').textContent = symbol + Number(volumeVal).toLocaleString();
+            });
+        });
+    </script>
 </body>
 </html>
