@@ -18,23 +18,64 @@ app.get("/jokes/:id",(req,res)=>{
   const id = Number(req.params.id);
   const joke = jokes.find(joke => joke.id === id);
   res.send(joke);
-})
+});
 
 //3. GET a jokes by filtering on the joke type
 app.get("/jokes",(req,res)=>{
   const filteredJoke = jokes.filter(joke => joke.jokeType === req.query.type);
   res.send(filteredJoke)
-})
+});
 
 //4. POST a new joke
+app.post("/jokes",(req,res)=>{
+  const newJoke = {
+    id : jokes.length+1,
+    jokeText : req.body.text,
+    jokeType : req.body.type,
+  };
+  jokes.push(newJoke);
+  res.send(newJoke);
+});
 
 //5. PUT a joke
+app.put("/jokes/:id",(req,res)=>{
+  const id = Number(req.params.id);
+  const index = jokes.findIndex(joke => joke.id===id);
+  const updatedJoke = {
+    id : id,
+    jokeText : req.body.text,
+    jokeType : req.body.type,
+  };
+  jokes[index] = updatedJoke;
+  res.send(updatedJoke);
+});
 
 //6. PATCH a joke
+app.patch("/jokes/:id",(req,res)=>{
+  const id = Number(req.params.id);
+  const joke = jokes.find(joke => joke.id === id);
+  if(req.body.text){
+    joke.jokeText = req.body.text
+  }
+  if(req.body.type){
+    joke.jokeType = req.body.type
+  }
+  res.send(joke);
+});
 
 //7. DELETE Specific joke
+app.delete("/jokes/:id",(req,res)=>{
+  const id = Number(req.params.id)
+  const joke = jokes.findIndex(joke => joke.id === id);
+  jokes.splice(joke,1);
+  res.send("deleted");
+});
 
 //8. DELETE All jokes
+app.delete("/jokes",(req,res)=>{
+  jokes.splice(0,jokes.length);
+  res.send("deleted");
+});
 
 app.listen(port, () => {
   console.log(`Successfully started server on port ${port}.`);
